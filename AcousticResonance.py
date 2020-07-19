@@ -3,6 +3,7 @@ import math
 import scipy.special as sci
 import matplotlib.pyplot as plt
 
+
 #Temperature
 T_celsius = 20 #°C
 T_kelvin = T_celsius + 273.15
@@ -42,7 +43,7 @@ Pr = 0.71486 #Value given in matlab
 
 freq_start = 1
 freq_end = 2000 # in Hz. to be defined as input
-step = 20 # in Hz. to be defined as input
+step = 5 # in Hz. to be defined as input
 Count = 0 # iteration progress display
 
 num = 2 #from input number of sections is taken
@@ -56,9 +57,10 @@ alpha = []
 n = []
 phi = []
 
-rad = [0.001, 0.0006, 0.0004]
-L = [0.4, 0.3, 0.2]
-vol = [0, 0.00000005, 0]
+
+rad = [0.004, 0.002, 0.003]
+L = [0.06, 0.01, 0.05]
+vol = [0, 0.000002, 0.000009]
 
 for j in freq: #loop for frequencies
 
@@ -100,8 +102,8 @@ phase_shift = [np.angle(x, deg=False) for x in prod_ratio] # Take phase
 phase_shift = np.unwrap(phase_shift) # unwrap phases
 phase_shift = np.rad2deg(phase_shift) # from rad to degrees
 
-plot_1 = plt.figure(1, figsize=(10, 5))
-plt.plot(freq, phase_shift)
-plot_2 = plt.figure(2, figsize=(10,5))
-plt.plot(freq, amp_ratio)
-plt.show()
+#plot_1 = plt.figure(1, figsize=(10, 5))
+#plt.plot(freq, phase_shift)
+#plot_2 = plt.figure(2, figsize=(10,5))
+#plt.plot(freq, amp_ratio)
+#plt.show()
