@@ -3,64 +3,6 @@ import math
 import scipy.special as sci
 import os
 
-
-#Temperature
-T_celsius = 20 #°C
-T_kelvin = T_celsius + 273.15
-
-#Air dynamic viscosity
-visc = 18.27 * 0.000001 * ((291.15 + 120) / (T_kelvin + 120)) * ((T_kelvin / 291.15))**(1.5)
-#Adiabatic constant
-k = 1.4
-
-#Ideal Gas constant
-Ro = 8.314
-
-#Molecular weight (kg/mol)
-m = 0.02896 # to be defined as input
-
-#Constant of the gas
-r = Ro / m
-
-#Speed of sound
-speed = (k * r * T_kelvin)**0.5
-
-
-#Static pressure (Pa)
-Ps = 100000
-
-#density
-dens = Ps / (287.05 * T_kelvin)
-
-#Prandtl number
-
-cp = 1006.1 #specific heat
-kt = 0.026 #Thermal conductivity [W/m K]
-#Pr = cp * visc / kt
-Pr = 0.71486 #Value given in matlab
-
-
-
-#freq_start = 1
-#freq_end = 2000 # in Hz. to be defined as input
-#step = 5 # in Hz. to be defined as input
-Count = 0 # iteration progress display
-
-num = 2 #from input number of sections is taken
-
-#freq = range(freq_start, freq_end, step)
-
-#amp_ratio = [2*x for x in freq]
-#phase_shift = freq #define arrays with same length as freq to start with
-
-
-# take dimensions from GUI
-#dimensions_matrix = [[0.004, 0.06, 0], [0.002, 0.01, 0.000002], [0.003, 0.05, 0.000009]]
-
-###########################################
-###########################################
-###########################################
-
 def calculations():
 
     ratio = []
@@ -87,16 +29,13 @@ def calculations():
         pass
     else:
         tk.messagebox.showwarning(title=None, message="segment dimensions incomplete")
-    print(rad, L, vol, "rad, L, vol calcul")
 
     # Frequency
 
     freq_start = int(f_start.get())
     freq_end = int(f_end.get())
-    #print(type(freq_end))
     step = int(f_step.get())
     freq = range(freq_start, freq_end, step)
-    print(freq, len(freq), "holi-calc")
 
     # Air parameters input
 
@@ -108,6 +47,7 @@ def calculations():
     dens = Ps / (287.05 * T_kelvin)
     k = float(adiab.get())
     m = float(mol.get())
+    Ro = 8.314
     r = Ro / m
     speed = (k * r * T_kelvin) ** 0.5
     kt = float(therm.get())
@@ -157,14 +97,9 @@ def calculations():
 
     global phase_shift
     amp_ratio = [np.absolute(x) for x in prod_ratio] # Take absolute value of the complex ratio
-    print(len(amp_ratio), len(freq), "amp_ratio y freq en calc")
     phase_shift = [np.angle(x, deg=False) for x in prod_ratio] # Take phase
     phase_shift = np.unwrap(phase_shift) # unwrap phases
     phase_shift = np.rad2deg(phase_shift) # from rad to degrees
-
-#################################
-#################################
-#################################
 
 
 #########################################################################################################
@@ -255,7 +190,6 @@ freq_start = int(f_start.get())
 freq_end = int(f_end.get())
 step = int(f_step.get())
 freq = range(freq_start, freq_end, step)
-print(freq, "definición")
 
 # Input Air parameters
 
@@ -331,7 +265,7 @@ canvas1.draw()
 toolbar = NavigationToolbar2Tk(canvas1, tab1)  # Plot´s legend
 toolbar.update()
 canvas1.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-print(freq, "antes amp_plt")
+
 def amp_ratio_plot():
 
     freq_start = int(f_start.get())
@@ -342,8 +276,6 @@ def amp_ratio_plot():
     ax = canvas1.figure.axes[0]
     ax.set_xlim(0, freq_end)
     ax.set_ylim(0, 1.1 * max(amp_ratio))
-    print(len(amp_ratio), "amp_ratio in def amp_plot")
-    print(len(freq), "freq in def amp_plot")
     ax.plot(freq, amp_ratio)
     ax.grid(True)
     canvas1.draw()
@@ -406,9 +338,41 @@ img = ImageTk.PhotoImage(PIL_image_small)
 in_frame = tk.Label(wrapper4, image = img)
 in_frame.pack(side=tk.TOP, fill="both", pady=3)
 
+import csv
+
+name_value = tk.StringVar()
+csv_name = ttk.Entry(wrapper4, justify='center', textvariable=name_value)
+csv_name.insert(0, "Transfer_function.csv")
+csv_name.pack(fill="both", side=tk.BOTTOM, pady=0)
+
+
+def create_csv_file():
+
+    # field names
+    fields = ['Frequency [Hz]', 'Amplitude ratio', 'Phase shift [deg]']
+    columns = [freq, amp_ratio, phase_shift]
+    rows = [[columns[i][j] for i in range(3)] for j in range(len(freq))]# transpose colums to get rows
+
+    filename = name_value.get()
+
+    # writing to csv file
+    with open(filename, 'w', newline='') as csvfile:
+        # creating a csv writer object
+        csvwriter = csv.writer(csvfile, delimiter=';')
+        # writing the fields
+        csvwriter.writerow(fields)
+        # writing the data rows
+        csvwriter.writerows(rows)
+
+
+write_csv = tk.Button(wrapper4, height=1, width=8, text="Save last data as csv", command=lambda:[create_csv_file()])\
+    .pack(fill="both", side=tk.BOTTOM, pady=0)
 
 refresh = tk.Button(wrapper4, height=1, width=8, text="Calculate!", command=lambda:\
-    [(calculations(), amp_ratio_plot(), phase_shift_plot())]).pack(fill="both", side=tk.BOTTOM, pady=0)
+    [(calculations(), amp_ratio_plot(), phase_shift_plot())]).pack(fill="both", side=tk.TOP, pady=0)
+
+
+
 
 #clear = tk.Button(wrapper4, height=1, width=8, text="Clear plots", command=clear_plots())\
 #    .pack(fill="both", side=tk.RIGHT, pady=0)#side=tk.RIGHT, pady=0)
