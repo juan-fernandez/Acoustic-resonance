@@ -158,86 +158,85 @@ for row in range(8):
 
 dim_input.pack(fill="both")
 
-# Input frequency range
-
-freq_input = tk.Label(wrapper4, anchor="s")
-
-f_start_heading = tk.Label(freq_input, text="Frequency Start [Hz]", fg="black", padx=2, pady=3)
-f_start_heading.grid(row=0, column=0)
-freq_start = tk.StringVar
-f_start = ttk.Entry(freq_input, justify='center', textvariable=freq_start)
-f_start.insert(0, 1)
-f_start.grid(row=1, column=0, sticky="nsew", padx=2, pady=1)
-
-f_end_heading = tk.Label(freq_input, text="Frequency End [Hz]", fg="black", padx=2, pady=3)
-f_end_heading.grid(row=0, column=1)
-freq_end = tk.StringVar
-f_end = ttk.Entry(freq_input, justify='center', textvariable=freq_end)
-f_end.insert(0, 20000)
-f_end.grid(row=1, column=1, sticky="nsew", padx=2, pady=1)
-
-
-f_step_heading = tk.Label(freq_input, text="Frequency Step [Hz]", fg="black", padx=2, pady=3)
-f_step_heading.grid(row=0, column=2)
-step = tk.StringVar
-f_step = ttk.Entry(freq_input, justify='center', textvariable=step)
-f_step.insert(0, 5)
-f_step.grid(row=1, column=2, sticky="nsew", padx=2, pady=1)
-
-freq_input.pack(fill="y")
-
-freq_start = int(f_start.get())
-freq_end = int(f_end.get())
-step = int(f_step.get())
-freq = range(freq_start, freq_end, step)
-
 # Input Air parameters
 
 param_input = tk.Label(wrapper2, anchor="s")
 
 temp_heading = tk.Label(param_input, text="Temperature [°C]", fg="black", padx=8, pady=3)
-temp_heading.grid(row=0, column=0)
+temp_heading.grid(columnspan=3, row=0, column=0)
 T_celsius = tk.StringVar()
 temp = ttk.Entry(param_input, justify='center', textvariable=T_celsius)
 temp.insert(0, 20.0) # default
-temp.grid(row=1, column=0, sticky="nsew", padx=30, pady=1)
+temp.grid(columnspan=3, row=1, column=0, sticky="nsew", padx=30, pady=1)
 
 Pstatic_heading = tk.Label(param_input, text="Static pressure [Pa]", fg="black", padx=8, pady=3)
-Pstatic_heading.grid(row=2, column=0)
+Pstatic_heading.grid(columnspan=3, row=2, column=0)
 Ps = tk.StringVar()
 Pstatic = ttk.Entry(param_input, justify='center', textvariable=Ps)
 Pstatic.insert(0, 100000.0)
-Pstatic.grid(row=3, column=0, sticky="nsew", padx=30, pady=1)
+Pstatic.grid(columnspan=3, row=3, column=0, sticky="nsew", padx=30, pady=1)
 
 adiab_heading = tk.Label(param_input, text="Adiabatic constant", fg="black", padx=8, pady=3)
-adiab_heading.grid(row=4, column=0)
+adiab_heading.grid(columnspan=3, row=4, column=0)
 k = tk.StringVar()
 adiab = ttk.Entry(param_input, justify='center', textvariable=k)
 adiab.insert(0, 1.4)
-adiab.grid(row=5, column=0, sticky="nsew", padx=30, pady=1)
+adiab.grid(columnspan=3, row=5, column=0, sticky="nsew", padx=30, pady=5)
 
 mol_heading = tk.Label(param_input, text="Molecular weight [kg/mol]", fg="black", padx=8, pady=3)
-mol_heading.grid(row=0, column=1)
+mol_heading.grid(columnspan=3, row=0, column=3)
 m = tk.StringVar()
 mol = ttk.Entry(param_input, justify='center', textvariable=m)
 mol.insert(0, 0.02896)
-mol.grid(row=1, column=1, sticky="nsew", padx=30, pady=1)
+mol.grid(columnspan=3, row=1, column=3, sticky="nsew", padx=30, pady=1)
 
 therm_heading = tk.Label(param_input, text="Thermal conductivity [W/(m K)]", fg="black", padx=8, pady=3)
-therm_heading.grid(row=2, column=1)
+therm_heading.grid(columnspan=3, row=2, column=3)
 kt = tk.StringVar()
 therm = ttk.Entry(param_input, justify='center', textvariable=kt)
 therm.insert(0, 0.026)
-therm.grid(row=3, column=1, sticky="nsew", padx=30, pady=1)
+therm.grid(columnspan=3, row=3, column=3, sticky="nsew", padx=30, pady=1)
 
 Sh_heading = tk.Label(param_input, text="Specific heat (Cp) [J/(K kg)]", fg="black", padx=8, pady=3)
-Sh_heading.grid(row=4, column=1)
+Sh_heading.grid(columnspan=3, row=4, column=3)
 cp = tk.StringVar()
 Sh = ttk.Entry(param_input, justify='center', textvariable=cp)
 Sh.insert(0, 1006.1)
-Sh.grid(row=5, column=1, sticky="nsew", padx=30, pady=1)
+Sh.grid(columnspan=3, row=5, column=3, sticky="nsew", padx=30, pady=5)
 
+# Input frequency range
+
+#freq_input = tk.Label(wrapper4, anchor="s")
+
+f_start_heading = tk.Label(param_input, text="Frequency Start [Hz]", fg="black", padx=2, pady=3)
+f_start_heading.grid(columnspan=2, row=6, column=0)
+freq_start = tk.StringVar
+f_start = ttk.Entry(param_input, justify='center', textvariable=freq_start)
+f_start.insert(0, 1)
+f_start.grid(columnspan=2, row=7, column=0, sticky="nsew", padx=2, pady=1)
+
+f_end_heading = tk.Label(param_input, text="Frequency End [Hz]", fg="black", padx=2, pady=3)
+f_end_heading.grid(columnspan=2, row=6, column=2)
+freq_end = tk.StringVar
+f_end = ttk.Entry(param_input, justify='center', textvariable=freq_end)
+f_end.insert(0, 20000)
+f_end.grid(columnspan=2, row=7, column=2, sticky="nsew", padx=2, pady=1)
+
+
+f_step_heading = tk.Label(param_input, text="Frequency Step [Hz]", fg="black", padx=2, pady=3)
+f_step_heading.grid(columnspan=2, row=6, column=4)
+step = tk.StringVar
+f_step = ttk.Entry(param_input, justify='center', textvariable=step)
+f_step.insert(0, 5)
+f_step.grid(columnspan=2, row=7, column=4, sticky="nsew", padx=2, pady=0)
+
+#freq_input.pack(fill="y")
 param_input.pack(fill="both")
+
+freq_start = int(f_start.get())
+freq_end = int(f_end.get())
+step = int(f_step.get())
+freq = range(freq_start, freq_end, step)
 
 
 #Amplitude ratio tab
@@ -323,28 +322,35 @@ def phase_shift_plot():
 
 def clear_plots():
 
-    fig1.cla()
-    fig2.cla()
+    ax.clear()
+    ax1.clear()
+    ax.grid(True)
+    ax1.grid(True)
+    canvas1.draw()
+    canvas2.draw()
 
 
 # insert image in GUI
-
+central_input = tk.Label(wrapper4, anchor="s")
 
 image_name = str(os.getcwd()) + "\\tube_image.png"#"C:\\Users\\Daniel\\Desktop\\tube_image.png"
 PIL_image = Image.open(image_name)
 PIL_image_small = PIL_image.resize((400,110), Image.ANTIALIAS)
 
 img = ImageTk.PhotoImage(PIL_image_small)
-in_frame = tk.Label(wrapper4, image = img)
-in_frame.pack(side=tk.TOP, fill="both", pady=3)
+in_frame = tk.Label(central_input, image = img)
+in_frame.grid(columnspan=2, row=0, column=0)
+#in_frame.pack(side=tk.BOTTOM, fill="x", pady=3)
+central_input.pack(fill="y")
 
 import csv
 
 name_value = tk.StringVar()
-csv_name = ttk.Entry(wrapper4, justify='center', textvariable=name_value)
+csv_name = tk.Entry(central_input, justify='center', textvariable=name_value, width=32, bd=3)
 csv_name.insert(0, "Transfer_function.csv")
-csv_name.pack(fill="both", side=tk.BOTTOM, pady=0)
 
+csv_name.grid(columnspan=1, sticky='W', row=1, column=0, ipady=3, pady=3, padx=2)
+#csv_name.pack(expand=True, fill="x", side=tk.LEFT)
 
 def create_csv_file():
 
@@ -364,18 +370,16 @@ def create_csv_file():
         # writing the data rows
         csvwriter.writerows(rows)
 
+refresh_plots = tk.Button(central_input, height=1, width=60, text="Clear plots", command=lambda:\
+    [clear_plots()]).grid(columnspan=2, row=3, column=0, pady=3)
 
-write_csv = tk.Button(wrapper4, height=1, width=8, text="Save last data as csv", command=lambda:[create_csv_file()])\
-    .pack(fill="both", side=tk.BOTTOM, pady=0)
+write_csv = tk.Button(central_input, height=1, width=30, text="Save last data as csv", command=lambda:[create_csv_file()])\
+    .grid(columnspan=1, sticky='E', row=1, column=1, pady=3, padx=2)#pack(expand=True, fill="x", side=tk.RIGHT)#, pady=0)
 
-refresh = tk.Button(wrapper4, height=1, width=8, text="Calculate!", command=lambda:\
-    [(calculations(), amp_ratio_plot(), phase_shift_plot())]).pack(fill="both", side=tk.TOP, pady=0)
-
-
+calculate_data = tk.Button(central_input, height=1, width=60, text="Calculate!", command=lambda:\
+    [(calculations(), amp_ratio_plot(), phase_shift_plot())]).grid(columnspan=2, row=2, column=0, pady=2)
 
 
-#clear = tk.Button(wrapper4, height=1, width=8, text="Clear plots", command=clear_plots())\
-#    .pack(fill="both", side=tk.RIGHT, pady=0)#side=tk.RIGHT, pady=0)
 
 wrapper3.pack(side=tk.BOTTOM, fill="both", expand="yes", padx=20, pady=10)
 wrapper1.pack(side=tk.LEFT, fill="x", expand="yes", padx=20, pady=10)

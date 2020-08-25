@@ -1,1 +1,1 @@
-# Bergh-Tidjeman model - Acoustic response in a  one side opened tube
+# Bergh-Tidjeman model - Acoustic response in a  one side opened multi-secction-tube
