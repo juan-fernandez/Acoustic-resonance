@@ -1,5 +1,6 @@
 import numpy as np
 import math
+import cmath
 import scipy.special as sci
 import os
 
@@ -54,20 +55,26 @@ def calculations():
     cp = float(Sh.get())
     Pr = cp * visc / kt
 
+    var_message = False
     for j in freq: #loop for frequencies
 
         omega = 2 * np.pi * j #angular frequency
+
 
         for i in range(len(rad)-1, -1, -1): #loop for tube sections
 
 
             alpha.insert(0, ((complex(0, 1)) ** 1.5) * rad[i] * np.sqrt(dens * omega / visc))
+
             n.insert(0, (1 + ((k - 1) / k) * ((sci.jv(2, (alpha[0] * np.sqrt(Pr))))
                                               / (sci.jv(0, (alpha[0] * np.sqrt(Pr)))))) ** (-1))
-            #print(n)
+
             phi.insert(0, ((omega / speed) * np.sqrt((sci.jv(0, alpha[0]))/(sci.jv(2, alpha[0]))) * np.sqrt(k / n[0])))
-            #print(j,i)
-            #print(alpha)
+
+            if cmath.isnan(phi[0]) == True and var_message == False:
+                tk.messagebox.showerror(title=None, message="For the radius " + str(rad[i] * 1000)
+                                + " this model can only simulate up to " + str(j - step) + " Hz of frequency")
+                var_message = True
 
             if i == len(rad)-1: #for the first section of tube
 
@@ -76,16 +83,18 @@ def calculations():
                                  np.sinh(phi[0]*L[i]))**(-1)))
 
 
+
             # Up to here we´ve calculated the ratio for an isolated section. We apply until here for the first section
 
             else:
 
                 ratio.insert(0,((np.cosh(phi[0]*L[i]) + (n[0]*phi[0]*vol[i]/(k*np.pi*(rad[i]**2)))*np.sinh(phi[0]*L[i]) +
-                (((rad[i+1])/(rad[i]))**2)*((phi[1])/(phi[0])) * #(L[i]/L[i+1]) * ##check rad and L!!!
+                (((rad[i+1])/(rad[i]))**2)*((phi[1])/(phi[0])) *
                 ((sci.jv(0,alpha[0]))/(sci.jv(0,alpha[1]))) *
                 ((sci.jv(2, alpha[1])) / (sci.jv(2, alpha[0]))) *
                 ((np.sinh(phi[0]*L[i]))/(np.sinh(phi[1]*L[i+1]))) *
                 ((np.cosh(phi[1]*L[i+1])) - ratio[0])) **(-1)))
+
 
         prod_ratio.append(math.prod(ratio)) # multiply ratios for the different tubes and obtains total ratio for a frequency j
         alpha = []
@@ -181,7 +190,7 @@ adiab_heading.grid(columnspan=3, row=4, column=0)
 k = tk.StringVar()
 adiab = ttk.Entry(param_input, justify='center', textvariable=k)
 adiab.insert(0, 1.4)
-adiab.grid(columnspan=3, row=5, column=0, sticky="nsew", padx=30, pady=5)
+adiab.grid(columnspan=3, row=5, column=0, sticky="nsew", padx=30, pady=1)
 
 mol_heading = tk.Label(param_input, text="Molecular weight [kg/mol]", fg="black", padx=8, pady=3)
 mol_heading.grid(columnspan=3, row=0, column=3)
@@ -202,33 +211,32 @@ Sh_heading.grid(columnspan=3, row=4, column=3)
 cp = tk.StringVar()
 Sh = ttk.Entry(param_input, justify='center', textvariable=cp)
 Sh.insert(0, 1006.1)
-Sh.grid(columnspan=3, row=5, column=3, sticky="nsew", padx=30, pady=5)
+Sh.grid(columnspan=3, row=5, column=3, sticky="nsew", padx=30, pady=1)
 
 # Input frequency range
+sep = ttk.Separator(param_input, orient='horizontal').grid(row=6, column=0, columnspan=6, sticky="ew", pady=8)
 
-#freq_input = tk.Label(wrapper4, anchor="s")
-
-f_start_heading = tk.Label(param_input, text="Frequency Start [Hz]", fg="black", padx=2, pady=3)
-f_start_heading.grid(columnspan=2, row=6, column=0)
+f_start_heading = tk.Label(param_input, text="Frequency Start [Hz]", fg="black", padx=2, pady=1)
+f_start_heading.grid(columnspan=2, row=7, column=0)
 freq_start = tk.StringVar
 f_start = ttk.Entry(param_input, justify='center', textvariable=freq_start)
 f_start.insert(0, 1)
-f_start.grid(columnspan=2, row=7, column=0, sticky="nsew", padx=2, pady=1)
+f_start.grid(columnspan=2, row=8, column=0, sticky="nsew", padx=2, pady=1)
 
-f_end_heading = tk.Label(param_input, text="Frequency End [Hz]", fg="black", padx=2, pady=3)
-f_end_heading.grid(columnspan=2, row=6, column=2)
+f_end_heading = tk.Label(param_input, text="Frequency End [Hz]", fg="black", padx=2, pady=1)
+f_end_heading.grid(columnspan=2, row=7, column=2)
 freq_end = tk.StringVar
 f_end = ttk.Entry(param_input, justify='center', textvariable=freq_end)
 f_end.insert(0, 20000)
-f_end.grid(columnspan=2, row=7, column=2, sticky="nsew", padx=2, pady=1)
+f_end.grid(columnspan=2, row=8, column=2, sticky="nsew", padx=2, pady=1)
 
 
-f_step_heading = tk.Label(param_input, text="Frequency Step [Hz]", fg="black", padx=2, pady=3)
-f_step_heading.grid(columnspan=2, row=6, column=4)
+f_step_heading = tk.Label(param_input, text="Frequency Step [Hz]", fg="black", padx=2, pady=1)
+f_step_heading.grid(columnspan=2, row=7, column=4)
 step = tk.StringVar
 f_step = ttk.Entry(param_input, justify='center', textvariable=step)
 f_step.insert(0, 5)
-f_step.grid(columnspan=2, row=7, column=4, sticky="nsew", padx=2, pady=0)
+f_step.grid(columnspan=2, row=8, column=4, sticky="nsew", padx=2, pady=0)
 
 #freq_input.pack(fill="y")
 param_input.pack(fill="both")
