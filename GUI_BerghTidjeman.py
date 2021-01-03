@@ -42,7 +42,13 @@ def calculations():
 
     T_celsius = float(temp.get())
     T_kelvin = 273.15 + T_celsius
-    visc = 18.27 * 0.000001 * ((291.15 + 120) / (T_kelvin + 120)) * ((T_kelvin / 291.15)) ** (1.5)
+
+    Combo_value = Combo.get()
+    if Combo_value == 'Air':
+        visc = 18.27 * 0.000001 * ((291.15 + 120) / (T_kelvin + 120)) * ((T_kelvin / 291.15)) ** (1.5)
+    elif Combo_value == 'Other gas':
+        visc = float(vis.get()) * 1E-6
+
 
     Ps = float(Pstatic.get())
     dens = Ps / (287.05 * T_kelvin)
@@ -117,13 +123,14 @@ def calculations():
 
 import tkinter as tk
 from tkinter import ttk
+import tkinter.font as font
 from PIL import Image, ImageTk
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 from matplotlib.figure import Figure
 
 root = tk.Tk()
 root.title("-Acoustic tube Bergh-Tidjeman model -")
-root.geometry("1400x900")
+root.geometry("1500x900")
 
 wrapper1 = tk.LabelFrame(root, text="Tube geometry")
 wrapper2 = tk.LabelFrame(root, text="Parameters")
@@ -171,72 +178,105 @@ dim_input.pack(fill="both")
 
 param_input = tk.Label(wrapper2, anchor="s")
 
+
+# function activating and deactivating viscosity enry
+def callbackFunc(event):
+    Combo_value = Combo.get()
+    if Combo_value == 'Air':
+        vis_heading.config(state='disabled')
+        vis.config(state='disabled')
+    elif Combo_value == 'Other gas':
+        vis_heading.config(state='normal')
+        vis.config(state='normal')
+
+# selector between Air and other gas
+vlist = ['Air', 'Other gas']
+Combo = ttk.Combobox(param_input, values=vlist, state='readonly')
+Combo.current(0) # shows air as default
+Combo.grid(columnspan=2, row=0, column=0, padx=5, pady=5)
+Combo_value = Combo.get()
+Combo.bind("<<ComboboxSelected>>", callbackFunc)
+
+# viscosity entry
+vis_heading = tk.Label(param_input, text="Gas viscosity at temp [m^2/s (10^-6)]", fg="black", padx=8, pady=3)
+vis_heading.config(state='disabled')
+vis_heading.grid(columnspan=2, row=0, column=2)
+visc = tk.StringVar()
+vis = ttk.Entry(param_input, justify='center', textvariable=visc)
+vis.insert(0, 10)
+vis.config(state='disabled')
+vis.grid(columnspan=2, row=0, column=4, sticky="nsew", padx=8, pady=5)
+
+
+sep = ttk.Separator(param_input, orient='horizontal').grid(row=1, column=0, columnspan=6, sticky="ew", pady=8)
+
 temp_heading = tk.Label(param_input, text="Temperature [°C]", fg="black", padx=8, pady=3)
-temp_heading.grid(columnspan=3, row=0, column=0)
+temp_heading.grid(columnspan=3, row=2, column=0)
 T_celsius = tk.StringVar()
 temp = ttk.Entry(param_input, justify='center', textvariable=T_celsius)
 temp.insert(0, 20.0) # default
-temp.grid(columnspan=3, row=1, column=0, sticky="nsew", padx=30, pady=1)
+temp.grid(columnspan=3, row=3, column=0, sticky="nsew", padx=30, pady=1)
 
 Pstatic_heading = tk.Label(param_input, text="Static pressure [Pa]", fg="black", padx=8, pady=3)
-Pstatic_heading.grid(columnspan=3, row=2, column=0)
+Pstatic_heading.grid(columnspan=3, row=4, column=0)
 Ps = tk.StringVar()
 Pstatic = ttk.Entry(param_input, justify='center', textvariable=Ps)
 Pstatic.insert(0, 100000.0)
-Pstatic.grid(columnspan=3, row=3, column=0, sticky="nsew", padx=30, pady=1)
+Pstatic.grid(columnspan=3, row=5, column=0, sticky="nsew", padx=30, pady=1)
 
 adiab_heading = tk.Label(param_input, text="Adiabatic constant", fg="black", padx=8, pady=3)
-adiab_heading.grid(columnspan=3, row=4, column=0)
+adiab_heading.grid(columnspan=3, row=6, column=0)
 k = tk.StringVar()
 adiab = ttk.Entry(param_input, justify='center', textvariable=k)
 adiab.insert(0, 1.4)
-adiab.grid(columnspan=3, row=5, column=0, sticky="nsew", padx=30, pady=1)
+adiab.grid(columnspan=3, row=7, column=0, sticky="nsew", padx=30, pady=1)
 
 mol_heading = tk.Label(param_input, text="Molecular weight [kg/mol]", fg="black", padx=8, pady=3)
-mol_heading.grid(columnspan=3, row=0, column=3)
+mol_heading.grid(columnspan=3, row=2, column=3)
 m = tk.StringVar()
 mol = ttk.Entry(param_input, justify='center', textvariable=m)
 mol.insert(0, 0.02896)
-mol.grid(columnspan=3, row=1, column=3, sticky="nsew", padx=30, pady=1)
+mol.grid(columnspan=3, row=3, column=3, sticky="nsew", padx=30, pady=1)
 
 therm_heading = tk.Label(param_input, text="Thermal conductivity [W/(m K)]", fg="black", padx=8, pady=3)
-therm_heading.grid(columnspan=3, row=2, column=3)
+therm_heading.grid(columnspan=3, row=4, column=3)
 kt = tk.StringVar()
 therm = ttk.Entry(param_input, justify='center', textvariable=kt)
 therm.insert(0, 0.026)
-therm.grid(columnspan=3, row=3, column=3, sticky="nsew", padx=30, pady=1)
+therm.grid(columnspan=3, row=5, column=3, sticky="nsew", padx=30, pady=1)
 
 Sh_heading = tk.Label(param_input, text="Specific heat (Cp) [J/(K kg)]", fg="black", padx=8, pady=3)
-Sh_heading.grid(columnspan=3, row=4, column=3)
+Sh_heading.grid(columnspan=3, row=6, column=3)
 cp = tk.StringVar()
 Sh = ttk.Entry(param_input, justify='center', textvariable=cp)
 Sh.insert(0, 1006.1)
-Sh.grid(columnspan=3, row=5, column=3, sticky="nsew", padx=30, pady=1)
+Sh.grid(columnspan=3, row=7, column=3, sticky="nsew", padx=30, pady=1)
+
 
 # Input frequency range
-sep = ttk.Separator(param_input, orient='horizontal').grid(row=6, column=0, columnspan=6, sticky="ew", pady=8)
+sep = ttk.Separator(param_input, orient='horizontal').grid(row=8, column=0, columnspan=6, sticky="ew", pady=8)
 
 f_start_heading = tk.Label(param_input, text="Frequency Start [Hz]", fg="black", padx=2, pady=1)
-f_start_heading.grid(columnspan=2, row=7, column=0)
+f_start_heading.grid(columnspan=2, row=9, column=0)
 freq_start = tk.StringVar
 f_start = ttk.Entry(param_input, justify='center', textvariable=freq_start)
 f_start.insert(0, 1)
-f_start.grid(columnspan=2, row=8, column=0, sticky="nsew", padx=2, pady=1)
+f_start.grid(columnspan=2, row=10, column=0, sticky="nsew", padx=2, pady=1)
 
 f_end_heading = tk.Label(param_input, text="Frequency End [Hz]", fg="black", padx=2, pady=1)
-f_end_heading.grid(columnspan=2, row=7, column=2)
+f_end_heading.grid(columnspan=2, row=9, column=2)
 freq_end = tk.StringVar
 f_end = ttk.Entry(param_input, justify='center', textvariable=freq_end)
 f_end.insert(0, 20000)
-f_end.grid(columnspan=2, row=8, column=2, sticky="nsew", padx=2, pady=1)
+f_end.grid(columnspan=2, row=10, column=2, sticky="nsew", padx=2, pady=1)
 
 
 f_step_heading = tk.Label(param_input, text="Frequency Step [Hz]", fg="black", padx=2, pady=1)
-f_step_heading.grid(columnspan=2, row=7, column=4)
+f_step_heading.grid(columnspan=2, row=9, column=4)
 step = tk.StringVar
 f_step = ttk.Entry(param_input, justify='center', textvariable=step)
 f_step.insert(0, 5)
-f_step.grid(columnspan=2, row=8, column=4, sticky="nsew", padx=2, pady=0)
+f_step.grid(columnspan=2, row=10, column=4, sticky="nsew", padx=2, pady=0)
 
 #freq_input.pack(fill="y")
 param_input.pack(fill="both")
@@ -259,6 +299,7 @@ wrapper3.add(tab1, text="Amplitude ratio")
 calculations()
 
 fig1 = Figure(figsize=(10, 2), dpi=100)
+
 ax = fig1.add_subplot(1,1,1)
 ax.set_xlim(0, freq_end)
 ax.set_ylim(0, 1.1 * max(amp_ratio) + 0.1)
@@ -347,7 +388,7 @@ PIL_image_small = PIL_image.resize((400,110), Image.ANTIALIAS)
 
 img = ImageTk.PhotoImage(PIL_image_small)
 in_frame = tk.Label(central_input, image = img)
-in_frame.grid(columnspan=2, row=0, column=0)
+in_frame.grid(columnspan=1, row=0, column=0)
 #in_frame.pack(side=tk.BOTTOM, fill="x", pady=3)
 central_input.pack(fill="y")
 
@@ -378,15 +419,14 @@ def create_csv_file():
         # writing the data rows
         csvwriter.writerows(rows)
 
-refresh_plots = tk.Button(central_input, height=1, width=60, text="Clear plots", command=lambda:\
-    [clear_plots()]).grid(columnspan=2, row=3, column=0, pady=3)
+refresh_plots = tk.Button(central_input, height=1, width=62, text="Clear plots", command=lambda:\
+    [clear_plots()]).grid(columnspan=1, row=3, column=0, pady=3)
 
-write_csv = tk.Button(central_input, height=1, width=30, text="Save last data as csv", command=lambda:[create_csv_file()])\
-    .grid(columnspan=1, sticky='E', row=1, column=1, pady=3, padx=2)#pack(expand=True, fill="x", side=tk.RIGHT)#, pady=0)
+write_csv = tk.Button(central_input, height=1, width=30, text="Save last data as csv", font=font.Font(family='Calibri', size=11, weight='bold'),command=lambda:[create_csv_file()])\
+    .grid(columnspan=1, sticky='E', row=1, column=0, pady=3, padx=2)
 
-calculate_data = tk.Button(central_input, height=1, width=60, text="Calculate!", command=lambda:\
-    [(calculations(), amp_ratio_plot(), phase_shift_plot())]).grid(columnspan=2, row=2, column=0, pady=2)
-
+calculate_data = tk.Button(central_input, height=3, width=43, text="Calculate!", font=font.Font(family='Calibri', size=14, weight='bold'), command=lambda:\
+    [(calculations(), amp_ratio_plot(), phase_shift_plot())]).grid(columnspan=1, row=2, column=0, pady=2)
 
 
 wrapper3.pack(side=tk.BOTTOM, fill="both", expand="yes", padx=20, pady=10)
