@@ -1,1 +1,1 @@
-# Bergh-Tidjeman model - Acoustic response in a  one side opened multi-secction-tube
+# # Acoustic response in a one side opened multi-secction-tube.According to Bergh-Tidjeman model. (Theoretical and experimental results for the dynamic response of pressure measuring systems by H.Bergh and H.Tijdeman - 1965)

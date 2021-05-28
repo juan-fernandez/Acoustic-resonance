@@ -102,7 +102,7 @@ def calculations():
                 ((np.cosh(phi[1]*L[i+1])) - ratio[0])) **(-1)))
 
 
-        prod_ratio.append(math.prod(ratio)) # multiply ratios for the different tubes and obtains total ratio for a frequency j
+        prod_ratio.append(np.prod(ratio)) # multiply ratios for the different tubes and obtains total ratio for a frequency j
         alpha = []
         n = []
         phi = []
@@ -324,6 +324,8 @@ def amp_ratio_plot():
     ax = canvas1.figure.axes[0]
     ax.set_xlim(0, freq_end)
     ax.set_ylim(0, 1.1 * max(amp_ratio))
+    ax.set_xlabel("Frequency [Hz]")
+    ax.set_ylabel("Amplitude ratio")
     ax.plot(freq, amp_ratio)
     ax.grid(True)
     canvas1.draw()
@@ -365,6 +367,7 @@ def phase_shift_plot():
     ax1 = canvas2.figure.axes[0]
     ax1.set_xlim(0, freq_end)
     ax1.set_ylim(min(phase_shift), max(phase_shift))
+
     ax1.plot(freq, phase_shift)
     ax1.grid(True)
     canvas2.draw()
@@ -373,6 +376,10 @@ def clear_plots():
 
     ax.clear()
     ax1.clear()
+    ax.set_xlabel("Frequency [Hz]")
+    ax.set_ylabel("Amplitude ratio")
+    ax1.set_xlabel("Frequency [Hz]")
+    ax1.set_ylabel("Phase shift [degree]")
     ax.grid(True)
     ax1.grid(True)
     canvas1.draw()
